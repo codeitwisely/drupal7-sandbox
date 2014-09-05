@@ -19,4 +19,5 @@ features[field_instance][] = node-article-field_tags
 features[field_instance][] = node-article-field_twst
 features[node][] = article
 features[taxonomy][] = tags
+features[variable][] = field_bundle_settings_node__article
 features_exclude[dependencies][options] = options
