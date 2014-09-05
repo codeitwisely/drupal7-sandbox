@@ -1,0 +1,3 @@
+name = JDT Core
+description = Installs modules for others.
+core = 7.x

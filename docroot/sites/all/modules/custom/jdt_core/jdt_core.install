@@ -1,0 +1,12 @@
+<?php
+
+/*
+Implements update.
+*/
+function jdt_core_update_7000() {
+	// Declare an array of modules to be installed
+	$module_list = array("views", "features", "strongarm", "context", "pathauto", "diff", "libraries", "jquery_update", "devel", "module_filter", "admin_menu");
+	module_enable($module_list, $enable_dependencies = TRUE);
+	//t('Installation Complete');
+	//throw new DrupalUpdateException('Something went wrong; here is what you should do.');
+}
