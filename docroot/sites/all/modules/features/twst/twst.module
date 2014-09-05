@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * Code for the twst feature.
+ */
+
+include_once 'twst.features.inc';
+
+function twst_menu() {
+  return array(
+    'path-twst' => array(
+      'title' => 'twst',
+      'access callback' => TRUE,
+      'page callback' => '_twst_callback',
+    ),
+  );
+}
+
+function _twst_callback() {
+  return 'FNORD';
+}
