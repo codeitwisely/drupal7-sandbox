@@ -1,0 +1,59 @@
+CODING STANDARS
+
+Function comments
+
+Comments at the top of functions are written this way:
+
+/**
+ * Comments.
+ */
+ function function_name() {
+  ...
+ }
+
+Compare to
+/*
+Implements update.
+*/
+function jdt_core_update_7001() {
+
+// DELETE Function
+function jdt_user_notes_delete(){
+
+see https://www.drupal.org/node/1354 for the Doxygen style comments used for Drupal projects.
+
+
+Two spaces instead of tabs - your files still include tabs mixed in with spaces.
+
+Implementing hooks:
+/*
+Implements update.
+*/
+
+Should be:
+
+/**
+ * Implements hook_update_N().
+ */
+
+db related code:
+  ...
+  // db_update()...->execute() returns the number of rows updated.
+  $count = db_update('user_note')
+         ->fields($entry)
+         ->condition('pid', $entry['pid'])
+         ->execute();
+}
+
+should be (you have done this here and there):
+  ...
+  // db_update()...->execute() returns the number of rows updated.
+  $count = db_update('user_note')
+    ->fields($entry)
+     ->condition('pid', $entry['pid'])
+     ->execute();
+}
+
+Indentation in jdt_user_notes.test is wonky.
+
+module jdt_content_type_article is not in contrib dir.
