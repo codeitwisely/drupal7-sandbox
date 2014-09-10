@@ -19,7 +19,9 @@ function jdt_user_notes_permission(){
 	);
 }
 
-// READ
+/**
+* Read
+*/
 function jdt_user_notes_entry_load($entry = array()){
   $select = db_select('user_note', 'drupal7_development');
   $select->fields('drupal7_development');
@@ -31,7 +33,9 @@ function jdt_user_notes_entry_load($entry = array()){
   return $select->execute()->fetchAll();
 }
 
-// ADD
+/**
+* Add
+*/
 function jdt_user_notes_insert($entry){
   $return_value = NULL;
   try{
@@ -46,14 +50,18 @@ function jdt_user_notes_insert($entry){
 	return $return_value;
 }
 
-// DELETE
+/**
+* Delete
+*/
 function jdt_user_notes_delete($entry){
   db_delete('user_note')
-       ->condition('note_id', $entry['note_id'])
-       ->execute();
+    ->condition('note_id', $entry['note_id'])
+    ->execute();
 }
 
-// EDIT
+/**
+* Edit
+*/
 function jdt_user_notes_update($entry){
   try {
     // db_update()...->execute() returns the number of rows updated.
