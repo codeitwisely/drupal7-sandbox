@@ -1,0 +1,109 @@
+<?php
+/*
+* SimpleTests
+*/
+class JDTUSERNOTESTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+	  return array(
+		  'name' => 'JDT User Note Test',
+			'description' => 'Test CRUD Operations',
+			'group' => 'Jdt User Notes',
+		);
+	}
+  /*
+  * Creates User with Administrative Credentials
+  */
+	public function drupalCreateAdminUser(array $permissions = array()) {
+    $roles = user_roles();
+    $index = array_search('administrator', $roles);
+    $user = $this->drupalCreateUser($permissions);
+    $user->roles[$index] = 'administrator';
+    return user_save($user);
+	}
+	public function setUp() {
+		// Enable any modules required for the test. This should be an array of
+    // module names.
+    parent::setUp(array(
+    	'jdt_core',
+    	'jdt_content_type_article',
+    	'jdt_user_notes',
+    ));
+    $user = $this->drupalCreateAdminUser();
+		$this->drupalLogin($user);
+    	
+    }
+  /* 
+  * Tests CRUD Functions
+  */
+  public function testAPIExamples() {
+  	// Load Entries - Check for Two
+		/////////////
+		//READ
+		////////////
+	  $result =  jdt_user_notes_entry_load();
+		$this->assertEqual(
+      		count($result),
+      		2,
+      		'Found a total of 2 entries.'
+    );
+		// Add a New entry and test if three exist
+		/////////////////////
+		//CREATE ENTRY
+		/////////////////////
+		$entry = array(
+		  'note_text' => 'Text 3',
+		);
+
+		jdt_user_notes_insert($entry);
+
+		$result = jdt_user_notes_entry_load();
+    $this->assertEqual(
+      	count($result),
+      	3,
+      	'Found a total of 3 entries.'
+    );
+		////////////////
+		//DELETE Entries
+		////////////////
+		$result = jdt_user_notes_entry_load(array('note_text' => 'Hello Note 1'));
+		$this->assertEqual(
+      		count($result),
+      		1,
+      		'Found one entry with Hello Note 1'
+    	);
+		$entry= (array)end($result);
+		$this->assertEqual(
+			$entry['note_text'],
+			'Hello Note 1',
+			'Hello Note 1 is found'
+		);
+		jdt_user_notes_delete($entry);
+		$result = jdt_user_notes_entry_load();
+    	$this->assertEqual(
+      		count($result),
+      		2,
+      		'Found a total of 2 entries.'
+    	);
+    	/////////////////
+    	//UPDATE Entries
+    	/////////////////
+    	$result = jdt_user_notes_entry_load(array('note_text' => 'Hello Note 2'));
+    	$this->assertEqual(
+      		count($result),
+      		1,
+      		'Found one entry with Hello Note 1'
+    	);
+    	// Get the entry.
+    	$entry = (array)end($result);
+    	// Change Note to Hello Note 5
+    	$entry['note_text'] = 'Hello Note 5';
+    	// Update entry in database.
+    	jdt_user_notes_update((array) $entry);
+    	$result = jdt_user_notes_entry_load(array('note_text' => 'Hello Note 5'));
+		$this->assertEqual(
+      		count($result),
+      		1,
+      		'Found one entry with Hello Note 5'
+    	);
+	}
+}

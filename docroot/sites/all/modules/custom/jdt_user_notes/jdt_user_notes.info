@@ -1,0 +1,6 @@
+name = JDT User Notes
+description = Allow Users to add notes to articles
+core = 7.x
+testing_api = 2.x
+files[] = jdt_user_notes.crud.inc
+files[] = jdt_user_notes.test

@@ -1,0 +1,63 @@
+<?php
+
+function jdt_user_notes_install(){
+  $fields = array(
+    'note_text' => 'Hello Note 1'
+	);
+  db_insert('user_note')
+    ->fields($fields)
+	->execute();
+
+  $fields = array(
+    'note_text' => 'Hello Note 2'
+  );
+  db_insert('user_note')
+    ->fields($fields)
+	->execute();	
+}
+
+// Create User note table
+function jdt_user_notes_schema() {
+  $schema['user_note'] = array(
+  //Specification for table jdt_user_notes
+    'description' => 'The base table for user notes.',
+	  'fields' => array(
+ 	    'note_id' => array(
+ 		  'description' => 'The primary identifier for user note.',
+ 		  'type' => 'serial',
+ 		  'unsigned' => TRUE,
+ 		  'not null' => TRUE,
+  		 ),
+  	    'article_nid' => array(
+ 		  'description' => 'The primary identifier for article.',
+ 		  'type' => 'int',
+ 		  'unsigned' => TRUE,
+ 		  'not null' => TRUE,
+ 		  'default' => 0,
+  		),
+  		'author_uid' => array(
+ 		  'description' => 'The primary identifier for author user_id.',
+ 		  'type' => 'int',
+ 		  'unsigned' => TRUE,
+ 		  'not null' => TRUE,
+ 		  'default' => 0,
+  		),
+  		'note_text' => array(
+ 		  'description' => 'Author note text.',
+ 		  'type' => 'varchar',
+ 		  'length' => 255,
+ 		  'not null' => TRUE,
+ 		  'default' => '',
+  		),
+	),
+	  'primary key' => array('note_id'),
+	  'indexes' => array(
+        'note_id' => array('note_id'),
+      	  'article_nid' => array('article_nid'),
+      	  'author_uid' => array('author_uid'),
+      	  'note_text' => array('note_text'),
+    	),		
+		
+	);
+	return $schema;
+}
