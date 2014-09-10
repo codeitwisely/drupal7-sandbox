@@ -2,7 +2,6 @@
 /**
 * Install Schema
 */
-
 function jdt_user_notes_install(){
   $fields = array(
     'note_text' => 'Hello Note 1'
@@ -22,7 +21,6 @@ function jdt_user_notes_install(){
 /**
 * Create User Note Table
 */
-
 function jdt_user_notes_schema() {
   $schema['user_note'] = array(
     //Specification for table jdt_user_notes

@@ -1,9 +1,11 @@
 <?php
 /**
-* CRUD FUNCTIONS
+* Implementation of CRUD FUNCTIONS
 */
 
-// Edit
+/**
+* Function to Update, Edit
+*/
 function jdt_user_notes_update(){
   try {
     // DB_UPDATE - execute() returns number of rows updates
@@ -18,13 +20,19 @@ function jdt_user_notes_update(){
   }
   return $count;
 }
-// Delete
+
+/**
+* Function to Delete
+*/
 function jdt_user_notes_delete(){
   db_delete('user_note')
     ->condition('pid', $entry['pid'])
     ->execute();
 }
-// Add
+
+/**
+* Function to Add Note
+*/
 function jdt_user_notes_insert($entry){
   $return_value = NULL;
   try{
@@ -38,7 +46,10 @@ function jdt_user_notes_insert($entry){
   }
 return $return_value;
 }
-// Read
+
+/**
+* Function to Load entries from the DB
+*/
 function jdt_user_notes_entry_load($entry = array()){
   $select = db_select('user_note', 'drupal7_development');
   $select->fields('drupal7_development');

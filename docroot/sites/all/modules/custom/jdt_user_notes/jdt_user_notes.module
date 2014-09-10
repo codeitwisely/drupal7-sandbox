@@ -1,12 +1,16 @@
 <?php
-
-//Implements hook_permissions
+/**
+* Implements hook_permissions
+*/
 function jdt_user_notes_simpletest() {
   $dir = drupal_get_path('module', 'jdt_user_notes');
   $tests = file_scan_directory($dir, '\.test$');
   return array_keys($tests);
 }
-//Creates Standard Permissions
+
+/**
+* Creates Standard Permissions
+*/
 function jdt_user_notes_permission(){
   return array(
     'jdt_user_notes' => array( 
@@ -15,7 +19,10 @@ function jdt_user_notes_permission(){
     ),
   );
 }
-// Read
+
+/**
+* Read entries from the Database and load them
+*/
 function jdt_user_notes_entry_load($entry = array()){
   $select = db_select('user_note', 'drupal7_development');
   $select->fields('drupal7_development');
@@ -26,7 +33,9 @@ function jdt_user_notes_entry_load($entry = array()){
   // Return the result in object format.
   return $select->execute()->fetchAll();
 }
-// Add
+/**
+* Function to insert values into DB
+**/
 function jdt_user_notes_insert($entry){
   $return_value = NULL;
   try{
@@ -40,13 +49,19 @@ function jdt_user_notes_insert($entry){
   }
   return $return_value;
 }
-// Delete
+
+/**
+* Function to delete entries from DB
+**/
 function jdt_user_notes_delete($entry){
   db_delete('user_note')
     ->condition('note_id', $entry['note_id'])
     ->execute();
 }
-// Edit
+
+/**
+* Function to edit entries from DB
+*/
 function jdt_user_notes_update($entry){
   try {
     // db_update()...->execute() returns the number of rows updated.
