@@ -11,7 +11,7 @@ function jdt_user_notes_simpletest() {
 /**
 * Creates Standard Permissions
 */
-function jdt_user_notes_permission(){
+function jdt_user_notes_permission() {
   return array(
     'jdt_user_notes' => array( 
     'title' => t('Administer Notes'),
@@ -23,7 +23,7 @@ function jdt_user_notes_permission(){
 /**
 * Read entries from the Database and load them
 */
-function jdt_user_notes_entry_load($entry = array()){
+function jdt_user_notes_entry_load($entry = array()) {
   $select = db_select('user_note', 'drupal7_development');
   $select->fields('drupal7_development');
   // Add each field and value as a condition to this query.
@@ -36,7 +36,7 @@ function jdt_user_notes_entry_load($entry = array()){
 /**
 * Function to insert values into DB
 **/
-function jdt_user_notes_insert($entry){
+function jdt_user_notes_insert($entry) {
   $return_value = NULL;
   try{
     $return_value = db_insert('user_note')
@@ -53,7 +53,7 @@ function jdt_user_notes_insert($entry){
 /**
 * Function to delete entries from DB
 **/
-function jdt_user_notes_delete($entry){
+function jdt_user_notes_delete($entry) {
   db_delete('user_note')
     ->condition('note_id', $entry['note_id'])
     ->execute();
@@ -62,7 +62,7 @@ function jdt_user_notes_delete($entry){
 /**
 * Function to edit entries from DB
 */
-function jdt_user_notes_update($entry){
+function jdt_user_notes_update($entry) {
   try {
     // db_update()...->execute() returns the number of rows updated.
     $count = db_update('user_note')

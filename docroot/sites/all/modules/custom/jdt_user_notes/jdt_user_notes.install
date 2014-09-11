@@ -2,7 +2,7 @@
 /**
 * Install Schema
 */
-function jdt_user_notes_install(){
+function jdt_user_notes_install() {
   $fields = array(
     'note_text' => 'Hello Note 1'
   );
