@@ -1,0 +1,122 @@
+<?php
+
+/**
+  * @file
+  * Module that add notes
+  */
+
+/**
+  * Implements hook_menu().
+  */
+function jdt_user_form_notes_menu() {
+  return array(
+    // note/article_nid
+    'note/%' => array(
+      'access callback' => TRUE,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('_jdt_user_form_notes_form_definition', 1),
+    ),
+  );
+}
+
+/**
+  * Form definition.
+  */
+function _jdt_user_form_notes_form_definition($form, &$form_state, $nid) {
+  global $user;
+  $user_id = $user->uid;
+  // Default value check
+  // If default value exists in database use that as default value
+  // If default value does not exist - print empty
+  //$default_note_value = '';
+  //note_exists($nid, $user_id);
+  $default_value_note = _jdt_user_form_notes_note_exists($nid, $user_id);
+  $default_note_id = _jdt_user_form_notes_note_id($nid, $user_id);
+  $form['fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Note to Article'),
+    '#default_value' => 'Hello',
+  );
+
+  $form['fieldset']['note_textfield'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Note'),
+    '#default_value' => $default_value_note,
+  );
+  // Grab value for node id and make it part of the form state
+  // so you can use it later
+  $form['nid'] = array(
+    '#type' => 'value',
+    '#value' => $nid,
+  );
+  // Make User ID available to the form
+  $form['uid'] = array(
+    '#type' => 'value',
+    '#value' => $user_id,
+  );
+  // Make User ID available to the form
+  $form['note_id'] = array(
+    '#type' => 'value',
+    '#value' => $default_note_id,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save Note'),
+  );
+  return $form;
+}
+
+/**
+* Grab Note from the database
+*/
+function _jdt_user_form_notes_note_exists($nid, $uid) {
+   // Grab values from the database
+  // Populate default value with the value stored
+  // in the database
+  $result = db_select('user_note', 'n')
+   ->fields('n')
+   ->condition('article_nid', $nid, "=")
+   ->condition('author_uid', $uid, "=")
+   ->execute()
+   ->fetchAssoc();
+  if(isset($result['note_text'])) {
+    return $result['note_text'];
+  }
+  return '';  
+}
+
+/**
+  * Grab Note Id from the database
+  */
+function _jdt_user_form_notes_note_id($nid, $uid) {
+   // Grab values from the database
+  // Populate default value with the value stored
+  // in the database
+  $result = db_select('user_note', 'n')
+   ->fields('n')
+   ->condition('article_nid', $nid, "=")
+   ->condition('author_uid', $uid, "=")
+   ->execute()
+   ->fetchAssoc();
+  //dpm($result);
+   return $result['note_id'];
+}
+
+/**
+  * Submit handler.
+  */
+function _jdt_user_form_notes_form_definition_submit($form, &$form_state) {
+  $values = $form_state['values'];
+  //dpm($values);
+  $entry = array(
+    'note_text'   => $form_state['values']['note_textfield'],
+    'author_uid'  => $form_state['values']['uid'],
+    'article_nid' => $form_state['values']['nid'],
+    'note_id'     => $form_state['values']['note_id'],
+    //'note_id'     =>
+  );
+  module_load_include('inc', 'jdt_user_form_notes', 'jdt_user_form_notes.crud');
+  //jdt_user_form_notes_insert($entry);
+  jdt_user_form_notes_update($entry);
+  drupal_set_message(t('Your note has been added'));
+}

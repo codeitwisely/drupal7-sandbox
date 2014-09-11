@@ -1,0 +1,105 @@
+<?php
+
+/**
+  * @file
+  * Module that add notes
+  */
+
+function jdt_user_form_notes_node_view($node, $view_mode, $langcode) {
+  //dsm($node);
+}
+
+/**
+  * Implements hook_menu().
+  */
+function jdt_user_form_notes_menu() {
+  return array(
+    // note/article_nid
+    'note/%' => array(
+      'access callback' => TRUE,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('_jdt_user_form_notes_form_definition', 1),
+    ),
+  );
+}
+
+/**
+  * Form definition.
+  */
+function _jdt_user_form_notes_form_definition($form, &$form_state, $nid) {
+  global $user;
+  //dpm($user);
+  //dpm($nid);
+  // Grab values from the database
+  // Populate default value with the value stored
+  // in the database
+  $result = db_select('user_note', 'n')
+   ->fields('n')
+   ->condition('article_nid', $nid, "=")
+   ->execute()
+   ->fetchAssoc();
+  $note_value_from_db = $result['note_text'];
+
+  //dpm($result);
+  $form['fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Note to Article'),
+    '#default_value' => 'Hello',
+  );
+  $form['fieldset']['note_textfield'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Note'),
+    '#default_value' => $note_value_from_db,
+  );
+  // Grab value for node id and make it part of the form state
+  // so you can use it later
+  $form['nid'] = array(
+    '#type' => 'value',
+    '#value' => $nid,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save Note'),
+  );
+  $form['update'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update Note'),
+  );
+  return $form;
+}
+
+/**
+  * Validation handler.
+  */
+function _jdt_user_form_notes_form_definition_validate($form, &$form_state) {
+  $values = $form_state['values'];
+  //if ($values['note_textfield'] != '') {
+    //form_set_error('note_textfield', t('Cannot submit an empty note..'));
+  //}
+}
+
+/**
+  * Submit handler.
+  */
+function _jdt_user_form_notes_form_definition_submit($form, &$form_state, $nid) {
+  //$insertion = db_insert('user_note')
+    //-> fields(array(
+     // 'article_nid' => $form_state['values']['nid'],
+     // 'note_text' => $form_state['values']['note_textfield'],
+     // 'uid' => 
+    //))
+  //->execute();
+  //drupal_set_message(t('Your note has been added'));
+}
+
+/**
+  * Update handler.
+  */
+//function _jdt_user_form_notes_form_definition_update($form, &$form_state, $nid) {
+  //$values = $form_state['values'];
+  //dpm($values);
+  //$updation = db_update('user_note')
+    //->fields(array(
+   ///  'note'
+   // ))
+//}

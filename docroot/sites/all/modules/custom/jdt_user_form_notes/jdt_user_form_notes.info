@@ -1,0 +1,4 @@
+name = JDT User Form Notes Form
+description = Allow Users to add and edit notes to through a Form
+core = 7.x
+files[] = jdt_user_form_notes.crud.inc
