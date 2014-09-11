@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * Module that examplifies the forms API.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function app_form_menu() {
+  return array(
+    'app-form-test/%' => array(
+      'access callback' => TRUE,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('_app_form_form_definition', 1),
+    ),
+  );
+}
+
+/**
+ * Menu callback.
+ */
+function _app_form_example_callback() {
+  //return drupal_get_form('_app_form_form_definition');
+}
+
+function app_form_
+
+/**
+ * Form definition.
+ */
+function _app_form_form_definition($form, &$form_state, $nid) {
+  dpm($nid);
+/*
+  $form = array(
+    '#tree' => TRUE,
+  );
+*/
+  $form['fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Fieldset title'),
+  );
+  $form['fieldset']['fnord_textfield'] = array(
+    '#type' => 'textfield',
+    '#title' => t('This is a textfield'),
+    '#default_value' => 'FNORD', 
+  );
+  $form['fieldset']['fnord_options'] = array(
+    '#type' => 'select',
+    '#title' => t('This is a select'),
+    '#options' => array(
+      t('option 1'),
+      t('option 2'),
+      t('option 3'),
+    ),
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
+  return $form;
+}
+
+/**
+ * Validation handler.
+ */
+function _app_form_form_definition_validate($form, &$form_state) {
+  $values = $form_state['values'];
+  if ($values['fnord_textfield'] !== 'FNORD') {
+    form_set_error('fnord_textfield', t('You are only allowed to submit FNORD.'));
+  }
+
+}
+
+/**
+ * Submit handler.
+ */
+function _app_form_form_definition_submit($form, &$form_state) {
+  $values = $form_state['values'];
+  drupal_set_message(t('You have submitted this form'));
+}
