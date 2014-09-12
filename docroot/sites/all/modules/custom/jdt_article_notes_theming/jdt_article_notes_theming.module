@@ -16,7 +16,7 @@ function jdt_article_notes_theming_menu() {
     'page arguments' => array(1),
     //'access callback' => TRUE,
     'access callback' => '_jdt_article_notes_theming_note_exist',
-    'access arguments' => array(2),  
+    'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
   );
   return $items;
@@ -26,16 +26,17 @@ function jdt_article_notes_theming_menu() {
   * Page Callback
   */
 function _jdt_article_notes_theming_display_notes($node) {  
-  //dpm($node);
-  $articles = _jdt_article_notes_theming_note_exists($node->nid);
-  // Display articles linked to the node in question
-  dpm($articles);
-  //return t('Hello');
+  //dpm($node);  
+  return t('Hello');
 }
 
-function _jdt_article_notes_theming_note_exist() {
-  //dpm($node);
-  return TRUE;
+function _jdt_article_notes_theming_note_exist($node) {
+  // Grab articles from the DB
+  $articles = _jdt_article_notes_theming_note_exists($node->nid);
+  // If no articles, don`t create a TAB
+  if($articles != ''){
+    return TRUE;
+  }
 }
 
 /**
