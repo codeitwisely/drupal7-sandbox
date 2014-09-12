@@ -14,8 +14,9 @@ function jdt_article_notes_theming_menu() {
     'description' => 'Display articles related to an article',
     'page callback' => '_jdt_article_notes_theming_display_notes',
     'page arguments' => array(1),
-    'access callback' => TRUE,
-    //'access callback' => '_jdt_article_notes_theming_note_exist',
+    //'access callback' => TRUE,
+    'access callback' => '_jdt_article_notes_theming_note_exist',
+    'access arguments' => array(2),  
     'type' => MENU_LOCAL_TASK,
   );
   return $items;
@@ -24,18 +25,17 @@ function jdt_article_notes_theming_menu() {
 /**
   * Page Callback
   */
-function _jdt_article_notes_theming_display_notes($node) {
-  return t('Hello');
-  $articles = _jdt_article_notes_theming_note_exists($node->$nid);
+function _jdt_article_notes_theming_display_notes($node) {  
+  //dpm($node);
+  $articles = _jdt_article_notes_theming_note_exists($node->nid);
+  // Display articles linked to the node in question
   dpm($articles);
+  //return t('Hello');
 }
 
-function _jdt_article_notes_theming_note_exist($node) {
-  //$existence = _jdt_article_notes_theming_note_exists($nid);
-  //dpm($existence);
-  //if($existence == '') {
-  	//return FALSE;
-  //}
+function _jdt_article_notes_theming_note_exist() {
+  //dpm($node);
+  return TRUE;
 }
 
 /**
