@@ -57,4 +57,25 @@ function _jdt_article_notes_theming_note_exists($nid) {
   return '';  
 }
 
-//function 
+//Hook Theme
+function jdt_article_notes_theming_theme() {
+  return array(
+    'verbose' => array(
+      'template' => 'jdt_article_notes_theming',
+      'arguments' => array(
+        'title' => null, 
+        'body' => null, 
+        'link' => null,
+      ),
+    ),
+    'preprocess_method' => array(
+      'template' => 'jdt_article_notes_theming',
+      'arguments' => array('node' => null),
+    ),
+  );
+}
+
+
+function _jdt_article_notes_theming_verbose(&$vars) {
+  dpm($node);
+}
