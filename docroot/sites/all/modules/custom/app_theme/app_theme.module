@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function app_theme_menu() {
+  return array(
+    'app-theme-test' => array(
+      'access callback' => TRUE,
+      'page callback' => 'app_theme_callback',
+      'type' => MENU_NORMAL_ITEM,
+    ),
+  );
+}
+
+/**
+ * Page callback.
+ */
+function app_theme_callback() {
+  $vars = array('first_friend' => 'Best!', 'second_collector' => 'Second best !', 'amazing_variable' => 'Something esle!');
+//  return theme('app-example', array($vars));
+  return array(
+    '#theme' => 'app-example',
+    '#first_friend' => 'Best friend ever!',
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function app_theme_theme() {
+  return array(
+    'app-example' => array(
+      'variables' => array(
+        'first_friend' => 123,
+        'second_collector' => 'Houston?',
+        'amazing_variable' => FALSE,
+      ),
+      'template' => 'theme/app_theme',
+    ),
+  );
+}
