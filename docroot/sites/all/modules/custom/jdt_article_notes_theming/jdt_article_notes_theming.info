@@ -1,3 +1,4 @@
 name = JDT Article Notes Theming
 description = Show notes linked to an article.
 core = 7.x
+files[] = jdt_article_notes_theming.tpl.php

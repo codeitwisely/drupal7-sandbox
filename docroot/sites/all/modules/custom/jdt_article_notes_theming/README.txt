@@ -27,3 +27,14 @@ hook_theme - https://api.drupal.org/api/drupal/modules%21system%21system.api.php
 To properly complete this task, you will need to learn how to accomplish this task using preprocessors.
 
 https://drupal.org/node/341628
+
+//_______________________________________________________________________________________________________
+Using ctools, modal popups or ajax or any combination of these, add a link to your notes listing 
+that allows notes to be edited in the popup. 
+
+Once this is done, also add another link/entry point on the article node page that will 
+allow a user to add notes to the article in a popup. 
+
+In other words, your add and edit forms should be placed in modal popups and links 
+should be placed in locations that make sense for the user to use them. Make sure 
+there is a way to cancel/exit/end your ajax call or modal box elegantly.  
