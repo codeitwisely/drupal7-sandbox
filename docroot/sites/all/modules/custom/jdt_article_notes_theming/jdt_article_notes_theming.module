@@ -1,0 +1,81 @@
+<?php
+
+/**
+  * Module allows theme to do all
+  * Module leaves rendering to theme functions and templates
+  */
+
+// Add the tab to the article page
+function jdt_article_notes_theming_menu() { 
+   //dpm($node);
+  // Display the My Notes tab only if notes exist
+  $items['node/%node/note'] = array(
+    'title' => 'My Notes',
+    'description' => 'Display articles related to an article',
+    'page callback' => '_jdt_article_notes_theming_display_notes',
+    'page arguments' => array(1),
+    //'access callback' => TRUE,
+    'access callback' => '_jdt_article_notes_theming_note_exist',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+  * Page Callback
+  */
+function _jdt_article_notes_theming_display_notes($node) {  
+  //dpm($node);  
+  return t('Hello');
+}
+
+function _jdt_article_notes_theming_note_exist($node) {
+  // Grab articles from the DB
+  $articles = _jdt_article_notes_theming_note_exists($node->nid);
+  // If no articles, don`t create a TAB
+  if($articles != ''){
+    return TRUE;
+  }
+}
+
+/**
+* Grab Note from the database
+*/
+function _jdt_article_notes_theming_note_exists($nid) {
+   // Grab values from the database
+  // Populate default value with the value stored
+  // in the database
+  $result = db_select('user_note', 'n')
+   ->fields('n')
+   ->condition('article_nid', $nid, "=")
+   ->execute()
+   ->fetchAssoc();
+  if(isset($result['note_text'])) {
+    return $result['note_text'];
+  }
+  return '';  
+}
+
+//Hook Theme
+function jdt_article_notes_theming_theme() {
+  return array(
+    'verbose' => array(
+      'template' => 'jdt_article_notes_theming',
+      'arguments' => array(
+        'title' => null, 
+        'body' => null, 
+        'link' => null,
+      ),
+    ),
+    'preprocess_method' => array(
+      'template' => 'jdt_article_notes_theming',
+      'arguments' => array('node' => null),
+    ),
+  );
+}
+
+
+function _jdt_article_notes_theming_verbose(&$vars) {
+  dpm($node);
+}
