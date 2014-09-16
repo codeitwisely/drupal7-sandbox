@@ -1,0 +1,4 @@
+name = Show Block to display site info
+description = Block shows information regarding site.
+core = 7.x
+dependencies[] = block

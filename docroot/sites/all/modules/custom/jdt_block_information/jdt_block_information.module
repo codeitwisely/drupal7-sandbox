@@ -1,0 +1,53 @@
+<?php
+
+function jdt_block_information_block_info() {
+  $blocks['articles_info'] = array(
+    'info' => t('Article Notes Information'),
+    'cache' => DRUPAL_CACHE_GLOBAL
+  );
+  return $blocks;
+}
+
+function jdt_block_information_block_view($delta = '') {
+  $block = array();
+ 
+  switch ($delta) {
+    case 'articles_info':
+      $block['subject'] = t('Site Information');
+      $block['content'] = _jdt_block_information_count_content();
+      break;
+     
+  }
+  return $block;
+}
+ 
+function _jdt_block_information_count_content() {
+  // Number of articles on the site
+  $num_articles = _jdt_block_information_numarticles();
+  // Total number of notes on the site. 
+  $num_notes = _jdt_block_information_numnotes();
+  // Total number of authenticated users on the site. 
+  $num_users = _jdt_block_information_numusers();
+  //return 'Hello World!';
+  return "Number of Articles: ".$num_articles."<br />".
+         "Number of Notes: ".$num_notes."<br />".
+         "Number of Users: ".$num_users ;
+}
+
+// Return Number of Articles on the site
+function _jdt_block_information_numarticles() {
+  $notes = db_query("SELECT count(nid) FROM {node} WHERE node.type='article'")->fetchField();
+  return $notes;
+}
+// Return Number of Notes on the site
+function _jdt_block_information_numnotes() {
+  $notes = db_query("SELECT count(note_id) FROM {user_note}")->fetchField();
+  return $notes;
+
+}
+// Return Number of Authenticated Users on the site
+function _jdt_block_information_numusers() {
+    $members = db_query("SELECT count(uid) FROM {users} WHERE users.status=1")->fetchField();
+    //echo "Registered Users : $members";
+    return $members;
+}
