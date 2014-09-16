@@ -13,7 +13,31 @@ function jdt_article_notes_theming_menu() {
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
   );
+
+  $items['node/%node/ajax-form'] = array(
+    'title' => 'Show Note Form',
+    'description' => 'Show Note Form',
+    'page callback' => '_jdt_article_notes_theming_note_text',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   return $items;
+}
+
+function _jdt_article_notes_theming_note_text($node) {
+  drupal_add_library('system', 'ui.dialog');
+  drupal_add_library('system', 'drupal.ajax');
+  drupal_add_js(drupal_get_path('module','jdt_article_notes_theming').'/jdt_article_notes_theming.js');
+  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid);
+  dpm($form);
+  if (isset($_GET['ajax'])) {
+    //echo render($form);
+    echo render($form);
+    // Halt page processing
+    drupal_exit();
+  }
+  return $form;
 }
 
 /**
@@ -22,7 +46,21 @@ function jdt_article_notes_theming_menu() {
 function _jdt_article_notes_theming_display_notes($node) {  
   //return t('Hello');
   //dpm($node);
+  //dpm($node->nid);
   global $user;
+  // Add JS to add functionality
+  drupal_add_library('system', 'ui.dialog');
+  drupal_add_js(drupal_get_path('module','jdt_article_notes_theming').'/jdt_article_notes_theming.js');
+  // Pass values to Javascript
+  $node_id = $node->nid;
+  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid);
+  //dpm($form);
+  $my_settings = array(
+    'nid' => $node_id,
+    'form' => $form,
+  );
+  drupal_add_js(array('jdt_article_notes_theming' => $my_settings), 'setting');
+
   // Initialize default values of variables
   // If no values exist, then default values get populated
   $vars = array('NOTE_TEXT' => 'NOTE_TEXT', 'NODE_TITLE' => 'NODE_TITLE', 'NODE_AUTHOR' => 'NODE_AUTHOR');
@@ -88,5 +126,20 @@ function jdt_article_notes_theming_theme() {
        ),
        'template' => 'theme/jdt_article_notes_theming',
     ),
+  );
+}
+
+/**
+  * Add a button to be able to edit a note
+  */
+function jdt_article_notes_theming_form($form, &$form_state) {
+  // Attach a button to the form to be able to attach Ajax to it
+  $form = array();
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Edit'),
+      '#ajax' => array(
+        'callback' => 'jdt_article_notes_theming_form_ajax_callback',
+      ),
   );
 }
