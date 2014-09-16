@@ -1,0 +1,5 @@
+name = JDT Article Notes Ajax
+description = Show notes linked to an article.
+core = 7.x
+files[] = jdt_article_notes_ajax.tpl.php
+files[] = jdt_article_notes_ajax.js

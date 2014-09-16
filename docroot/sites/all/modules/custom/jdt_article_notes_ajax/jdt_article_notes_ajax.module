@@ -1,0 +1,127 @@
+<?php
+/**
+  * Add the tab to the article page
+  */
+function jdt_article_notes_ajax_menu() { 
+  // Display the My Notes tab only if notes exist
+  $items = array();
+  $items['node/%node/note'] = array(
+    'title' => 'My Notes',
+    'description' => 'Display articles related to an article',
+    'page callback' => '_jdt_article_notes_ajax_display_notes',
+    'page arguments' => array(1),
+    'access callback' => '_jdt_article_notes_ajax_note_exist',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['sendmessage/%node'] = array(
+    'title' => 'Edit Note Text',
+    'description' => 'Edit Note Text',
+    'page callback' => 'rmessages_message_form',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+//--------------------------------------------------
+function rmessages_message_form($node) {
+  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid);
+  $node_id = $node->nid;
+  $my_settings = array(
+    'nid' => $node_id,
+    'form' => $form,
+  );
+  drupal_add_js(array('jdt_article_notes_ajax' => $my_settings), 'setting');
+  if (isset($_GET['ajax'])) {
+    echo render($form);
+    drupal_exit();
+  }
+  return $form;
+}
+//---------------------------------------------------
+/**
+  * Page Callback
+  */
+function _jdt_article_notes_ajax_display_notes($node) {
+  global $user;
+  // Add JS to add functionality
+  drupal_add_library('system', 'ui.dialog');
+  drupal_add_js(drupal_get_path('module','jdt_article_notes_ajax').'/jdt_article_notes_ajax.js');
+  // Pass values to Javascript
+  $node_id = $node->nid;
+  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid);
+  //dpm($form);
+  $my_settings = array(
+    'nid' => $node_id,
+    'form' => $form,
+  );
+  drupal_add_js(array('jdt_article_notes_ajax' => $my_settings), 'setting');
+  // Initialize default values of variables
+  // If no values exist, then default values get populated
+  $vars = array('NOTE_TEXT' => 'NOTE_TEXT', 'NODE_TITLE' => 'NODE_TITLE', 'NODE_AUTHOR' => 'NODE_AUTHOR');
+  // Preferred way of returning values is the render array
+  // Return values here
+
+  // Return Note Text
+  $articles = _jdt_article_notes_ajax_note_exists($node->nid);
+  // Return Node Title
+  $node_title = $node->title;
+  // Return Node Author
+  //dsm(user_load($node->uid));
+  $node_author = $user->name;
+  //$username = db_select()
+  return array(
+     '#theme' => 'jdt-article-notes',
+     '#NOTE_TEXT' => $articles,
+     '#NODE_TITLE' => $node_title,
+     '#NODE_AUTHOR' => $node_author,
+  );
+}
+
+/** 
+ * Create tab for notes only if notes exist for an article
+ */
+function _jdt_article_notes_ajax_note_exist($node) {
+  // Grab articles from the DB
+  $articles = _jdt_article_notes_ajax_note_exists($node->nid);
+  // If no articles, don`t create a TAB
+  if($articles != ''){
+    return TRUE;
+  }
+}
+
+/**
+* Grab Notes from the Database
+*/
+function _jdt_article_notes_ajax_note_exists($nid) {
+  // Grab values from the database
+  $result = db_select('user_note', 'n')
+   ->fields('n')
+   ->condition('article_nid', $nid, "=")
+   ->execute()
+   ->fetchAssoc();
+  // If a note exists, return it, else return empty
+  if(isset($result['note_text'])) {
+    return $result['note_text'];
+  }
+  return '';  
+}
+
+/**
+  * Hook Theme
+  */
+function jdt_article_notes_ajax_theme() {
+  return array(
+    // PLACEHOLDERS to hold initial values
+    'jdt-article-notes' => array(
+       'variables' => array(
+          'NOTE_TEXT' => 'Test Note linked to test node',
+          'NODE_TITLE' => 'Test Node',
+          'NODE_AUTHOR' => 'Test Node Author',
+       ),
+       'template' => 'theme/jdt_article_notes_ajax',
+    ),
+  );
+}
