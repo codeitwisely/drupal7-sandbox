@@ -2,7 +2,7 @@
 /**
   * Add the tab to the article page
   */
-function jdt_article_notes_ajax_menu() { 
+function jdt_article_notes_ajax_menu() {
   // Display the My Notes tab only if notes exist
   $items = array();
   $items['node/%node/note'] = array(
@@ -14,27 +14,32 @@ function jdt_article_notes_ajax_menu() {
     'access arguments' => array(1),
     'type' => MENU_LOCAL_TASK,
   );
-  $items['sendmessage/%node'] = array(
+  //$items['sendmessage/%node'] = array(
+  $items['sendmessage/%'] = array(
     'title' => 'Edit Note Text',
     'description' => 'Edit Note Text',
     'page callback' => 'rmessages_message_form',
     'page arguments' => array(1),
     'access callback' => TRUE,
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_CALLBACK,
   );
   return $items;
 }
 
 //--------------------------------------------------
 function rmessages_message_form($node) {
-  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid);
+  //$note_value = $_POST['noteval'];
+  // /dpm($note_txt);
+  $is_ajax = isset($_GET['ajax']);
+  $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid, $is_ajax);
   $node_id = $node->nid;
   $my_settings = array(
     'nid' => $node_id,
     'form' => $form,
   );
+  // Pass values to Jquery to be able to get access to node info
   drupal_add_js(array('jdt_article_notes_ajax' => $my_settings), 'setting');
-  if (isset($_GET['ajax'])) {
+  if ($is_ajax) {
     echo render($form);
     drupal_exit();
   }
@@ -48,6 +53,7 @@ function _jdt_article_notes_ajax_display_notes($node) {
   global $user;
   // Add JS to add functionality
   drupal_add_library('system', 'ui.dialog');
+  // Add JS for callback
   drupal_add_js(drupal_get_path('module','jdt_article_notes_ajax').'/jdt_article_notes_ajax.js');
   // Pass values to Javascript
   $node_id = $node->nid;
@@ -71,7 +77,6 @@ function _jdt_article_notes_ajax_display_notes($node) {
   // Return Node Author
   //dsm(user_load($node->uid));
   $node_author = $user->name;
-  //$username = db_select()
   return array(
      '#theme' => 'jdt-article-notes',
      '#NOTE_TEXT' => $articles,
@@ -80,7 +85,7 @@ function _jdt_article_notes_ajax_display_notes($node) {
   );
 }
 
-/** 
+/**
  * Create tab for notes only if notes exist for an article
  */
 function _jdt_article_notes_ajax_note_exist($node) {
@@ -106,7 +111,7 @@ function _jdt_article_notes_ajax_note_exists($nid) {
   if(isset($result['note_text'])) {
     return $result['note_text'];
   }
-  return '';  
+  return '';
 }
 
 /**
