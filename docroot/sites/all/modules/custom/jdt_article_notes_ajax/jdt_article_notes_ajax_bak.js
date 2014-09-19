@@ -12,4 +12,4 @@ Drupal.behaviors.jdt_article_notes_ajax = {
   	});
   }
 };
-})(jQuery); 
+})(jQuery);

@@ -15,7 +15,7 @@ function jdt_article_notes_ajax_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   //$items['sendmessage/%node'] = array(
-  $items['sendmessage/%'] = array(
+  $items['sendmessage/%node'] = array(
     'title' => 'Edit Note Text',
     'description' => 'Edit Note Text',
     'page callback' => 'rmessages_message_form',
@@ -23,14 +23,13 @@ function jdt_article_notes_ajax_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
+  // Return menu items
   return $items;
 }
-
-//--------------------------------------------------
+//---------------------------------------------------
 function rmessages_message_form($node) {
-  //$note_value = $_POST['noteval'];
-  // /dpm($note_txt);
   $is_ajax = isset($_GET['ajax']);
+  drupal_add_js(drupal_get_path('module','jdt_article_notes_ajax').'/jdt_article_notes_ajax.js');
   $form = drupal_get_form('_jdt_user_form_notes_form_definition', $node->nid, $is_ajax);
   $node_id = $node->nid;
   $my_settings = array(
@@ -40,11 +39,31 @@ function rmessages_message_form($node) {
   // Pass values to Jquery to be able to get access to node info
   drupal_add_js(array('jdt_article_notes_ajax' => $my_settings), 'setting');
   if ($is_ajax) {
+    // Render the form
     echo render($form);
+    // Issue the end of request
     drupal_exit();
   }
+
+  $value_pushed_in_txtbox = $_POST['name'];
+  jdt_article_notes_ajax_pushvalueinDB($value_pushed_in_txtbox);
   return $form;
 }
+
+function jdt_article_notes_ajax_pushvalueinDB($value) {
+  try {
+    db_insert('user_note')
+        ->fields(array(
+            'note_text' => $value,
+          ))
+        ->execute();
+      }
+      catch (PDOException $e) {
+        //Query failed
+      }
+  return $result;
+}
+
 //---------------------------------------------------
 /**
   * Page Callback
@@ -69,7 +88,6 @@ function _jdt_article_notes_ajax_display_notes($node) {
   $vars = array('NOTE_TEXT' => 'NOTE_TEXT', 'NODE_TITLE' => 'NODE_TITLE', 'NODE_AUTHOR' => 'NODE_AUTHOR');
   // Preferred way of returning values is the render array
   // Return values here
-
   // Return Note Text
   $articles = _jdt_article_notes_ajax_note_exists($node->nid);
   // Return Node Title
@@ -129,4 +147,5 @@ function jdt_article_notes_ajax_theme() {
        'template' => 'theme/jdt_article_notes_ajax',
     ),
   );
+
 }
